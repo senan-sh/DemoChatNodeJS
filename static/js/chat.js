@@ -1,4 +1,4 @@
-const socket = io()
+const socket = io(window.location.hostname)
 const my_user_id = $('#my_user_id').attr('data-id');
 let chat_token_jwt;
 socket.emit('add_sId_to_db', my_user_id);
