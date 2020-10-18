@@ -3,8 +3,9 @@ const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
 const cookie_parser = require('cookie-parser');
-const server = require('http').createServer(app);
+// const server = require('http').createServer(app);
 require('dotenv').config();
+const server = app.listen(process.env.PORT || 3000);
 const io = require('socket.io')(server);
 
 mongoose.connect(process.env.DB_CONNECTION_URL,
@@ -24,4 +25,3 @@ const ChatRouter = require('./routes/chat')(io);
 const AuthRouter = require('./routes/auth');
 app.use('/chat', ChatRouter);
 app.use('/auth', AuthRouter);
-app.listen(process.env.PORT || 3000);
