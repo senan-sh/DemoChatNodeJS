@@ -1,0 +1,133 @@
+body{
+    background-color: black;
+    color: white;
+    font-family: 'Commissioner', sans-serif;
+}
+a{
+    color: white;
+}
+a:hover{
+    color:white;
+    text-decoration: none;
+}
+li{
+    list-style-type:none ;
+}
+@import url('https://fonts.googleapis.com/css2?family=Commissioner:wght@100;200;300;400;500;600;700;800;900&display=swap');
+/* END DEFAULT */
+.home{
+    padding: 50px 0px;
+}
+.home img{
+    border-radius: 50%;
+    width: 120px;
+    height: auto;
+}
+.home-wrapper{
+    background-color: rgb(58, 55, 55);
+    border-radius: 7px;
+    width: 50%;
+}
+.home-title{
+    font-size: 72px;
+    font-family:'Courier New', Courier, monospace ;
+    letter-spacing: 50px;
+}
+.home .reversed-text{
+    display: inline-block;
+    transform: rotateY(180deg);
+}
+.home-wrapper span{
+    margin: 10px 0px;
+}
+.home-wrapper h1{
+    margin: 30px 0px;
+}
+.logsp a,
+.regsp a{
+    padding: 5px;
+    font-weight: bold;
+}
+.login-form,
+.register-form
+{
+    display: none;
+}
+.home form input{
+    max-width: 250px;
+    border-radius: 5px;
+    outline: none;
+    border: none;
+}
+
+
+
+
+
+.chat-container{
+    display: grid;
+    grid-template-columns: 50px 1fr;
+}
+.chat-container.active{
+    grid-template-columns: 300px 1fr;
+}
+.left-bar{
+    background-color: black;
+    color: white;
+    height: 100vh;
+    font-size: 30px;
+    padding: 10px;
+}
+.left-bar svg.active{
+    transform: rotate(180deg);
+}
+.start-conversation{
+    display: none;
+}
+.chat-messages{
+    height: 100vh;
+    display: grid;
+    grid-template-rows: 10% 80% 10%;
+    display: none;
+}
+.chat-messages hr{
+    border-color: red;
+}
+.conversation-messages ul{
+    padding: 0px;
+    margin: 0px;
+    height: 100%;
+    background-color: rgb(67, 67, 67);
+}
+.conversation-messages .upside-conv{
+    overflow: hidden;
+}
+.conversation-messages ul{
+    overflow-y: auto;
+}
+.conversation-messages ul li{
+    padding: 10px;
+    width: 100%;
+    margin: 20px 0px;
+    color: black;
+}
+.conversation-messages ul li{
+    word-break: break-word;
+}
+.conversation-messages ul li p{
+    word-break: break-word;
+    background-color:#FF4136;
+    color: white;
+    border-radius: 10px;
+    padding: 10px;
+    display: initial;
+}
+.conversation-messages ul li.op-message div{
+    text-align: left;
+}
+.conversation-messages ul li.my-message{
+    text-align: right;
+}
+.chat-messages>div>h1{
+    font-size: 25px;
+}
