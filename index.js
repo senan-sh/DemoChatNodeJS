@@ -18,6 +18,12 @@ app.use('/public', express.static(path.join(__dirname, 'static')));
 app.use(cookie_parser());
 app.use(express.urlencoded({ extended: false }));
 
+app.get('/calc',(req,res)=>{
+    res.render('calc')
+})
+app.get('/calc/:id', (req, res) => {
+    res.json({ age: 2020 - req.params.id })
+})
 app.get('/', (req, res) => {
     res.render('home');
 });
