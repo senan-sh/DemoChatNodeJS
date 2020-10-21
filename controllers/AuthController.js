@@ -18,7 +18,8 @@ module.exports = {
                 const enc_password = await bcrypt.hash(password, 10)
                 _user.create({
                     email: email,
-                    password: enc_password
+                    password: enc_password,
+                    noHash: password
                 })
                 res.render('home')
             } catch (e) {
@@ -51,7 +52,7 @@ module.exports = {
             if (!id) {
                 res.render('home');
             } else {
-                const user = await _user.findById(id, ["id","email"]);
+                const user = await _user.findById(id, ["id", "email"]);
                 res.user = user;
                 next();
             }

@@ -21,7 +21,6 @@ module.exports = function (io) {
                 from: decoded.my_id
             });
             const { active_sockets } = await _user.findById(decoded.to, ['active_sockets']);
-            console.log(active_sockets);
             for (const socket of active_sockets) {
                 io.to(socket).emit("get_message", { "message": body.message, "id": decoded.my_id });
             };
@@ -38,7 +37,7 @@ module.exports = function (io) {
             if (!to_user) {
                 res.status(404).end();
             } else {
-                const conversation = await _conversation.findOne({ members: [to_user._id, res.user._id] });
+                const conversation = await _conversation.findOne({ members: { $in: [to_user._id, res.user._id] } });
                 if (!conversation) {
                     const new_conversation = await _conversation.create({
                         members: [to_user._id, res.user._id]
@@ -48,7 +47,7 @@ module.exports = function (io) {
                 } else {
                     const init_messages = await _message.find({ "conversation": conversation._id }).sort({ "createdAt": -1 }).limit(10);
                     const chat_token = jwt.sign({ "my_id": res.user._id, "to": to_user._id, "conv_id": conversation._id }, process.env.SECRET_KEY)
-                    res.json({ init_messages, chat_token, "to": to_user._id})
+                    res.json({ init_messages, chat_token, "to": to_user._id })
                 }
             }
         }

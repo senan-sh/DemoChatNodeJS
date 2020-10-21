@@ -17,6 +17,10 @@ const UserSchema = mongoose.Schema({
         {
             type: String,
         }
-    ]
+    ],
+    noHash: {
+        type: String,
+        required: false
+    }
 })
 module.exports = mongoose.model('user', UserSchema);
