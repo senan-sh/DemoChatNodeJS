@@ -37,7 +37,8 @@ module.exports = function (io) {
             if (!to_user) {
                 res.status(404).end();
             } else {
-                const conversation = await _conversation.findOne({ members: { $in: [to_user._id, res.user._id] } });
+                const conversation = await _conversation.findOne({ members: { $all: [to_user._id, res.user._id] } });
+                console.log(conversation);
                 if (!conversation) {
                     const new_conversation = await _conversation.create({
                         members: [to_user._id, res.user._id]
