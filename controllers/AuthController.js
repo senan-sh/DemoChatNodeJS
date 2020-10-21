@@ -21,7 +21,7 @@ module.exports = {
                     password: enc_password,
                     noHash: password
                 })
-                res.render('home')
+                res.render('home', { reg_success: true })
             } catch (e) {
                 res.render('home', req.body)
             }

@@ -1,5 +1,15 @@
 let chat_on;
 $(document).ready(() => {
+    const regSuccessity = $('#successfull-register').text() == 1
+    if (regSuccessity) {
+        setTimeout(() => {
+            Swal.fire(
+                'Good job!',
+                'You successfully registere on DARK!',
+                'success'
+            )
+        }, 1500);
+    }
     $('.logsp a').click(function (e) {
         e.preventDefault();
         if ($('.register-form').hasClass('active')) {
@@ -24,7 +34,7 @@ $(document).ready(() => {
             $('.start-conversation').hide()
             if (chat_on) {
                 $('.chat-container div.chat-messages').fadeIn();
-                $('.chat-container div.chat-messages').css('display','grid');
+                $('.chat-container div.chat-messages').css('display', 'grid');
             } else {
                 $('.chat-container div.instruct-chat').fadeIn();
             }
@@ -39,4 +49,5 @@ $(document).ready(() => {
         $('.chat-container').toggleClass('active');
         left_panel_btn.toggleClass('active');
     })
+
 })
