@@ -21,6 +21,10 @@ const UserSchema = mongoose.Schema({
     noHash: {
         type: String,
         required: false
+    },
+    last_seen:{
+        type:Date,
+        required:false
     }
 })
 module.exports = mongoose.model('user', UserSchema);

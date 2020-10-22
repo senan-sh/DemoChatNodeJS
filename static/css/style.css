@@ -108,7 +108,7 @@ li{
 .conversation-messages ul li{
     padding: 10px;
     width: 100%;
-    margin: 20px 0px;
+    margin: 10px 0px;
     color: black;
 }
 .conversation-messages ul li{
@@ -119,8 +119,10 @@ li{
     background-color:#FF4136;
     color: white;
     border-radius: 10px;
-    padding: 10px;
-    display: initial;
+    padding: 3px 10px;
+    display: inline-block;
+    max-width: 80%;
+    margin: 0px;
 }
 .conversation-messages ul li.op-message div{
     text-align: left;

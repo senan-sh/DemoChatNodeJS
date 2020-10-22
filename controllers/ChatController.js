@@ -2,14 +2,18 @@ const _conversation = require('../models/conversation');
 const _user = require('../models/user');
 const _message = require('../models/message');
 const jwt = require('jsonwebtoken');
+const plus = 1000 * 60 * 60 * 2;
 
 module.exports = function (io) {
     io.on('connection', (socket) => {
         let user_id;
         socket.on('add_sId_to_db', async (id) => {
             user_id = id;
-            await _user.findByIdAndUpdate(id, { $push: { "active_sockets": socket.id } }, { useFindAndModify: true });
-        })
+            await _user.findByIdAndUpdate(id, { last_seen: Date.now() + plus, $push: { "active_sockets": socket.id } }, { useFindAndModify: true });
+        });//FALSE
+        socket.on('update_last_seen', (async (id) => {
+            await _user.findByIdAndUpdate(id, { last_seen: Date.now() + plus }, { useFindAndModify: true });
+        }));
         socket.on('disconnect', async (io) => {
             await _user.findByIdAndUpdate(user_id, { $pull: { "active_sockets": socket.id } }, { useFindAndModify: false });
         });
@@ -38,7 +42,6 @@ module.exports = function (io) {
                 res.status(404).end();
             } else {
                 const conversation = await _conversation.findOne({ members: { $all: [to_user._id, res.user._id] } });
-                console.log(conversation);
                 if (!conversation) {
                     const new_conversation = await _conversation.create({
                         members: [to_user._id, res.user._id]
@@ -47,7 +50,8 @@ module.exports = function (io) {
                     res.json({ chat_token, "email": req.query.email });
                 } else {
                     const init_messages = await _message.find({ "conversation": conversation._id }).sort({ "createdAt": -1 }).limit(10);
-                    const chat_token = jwt.sign({ "my_id": res.user._id, "to": to_user._id, "conv_id": conversation._id }, process.env.SECRET_KEY)
+                    const chat_token = jwt.sign({ "my_id": res.user._id, "to": to_user._id, "conv_id": conversation._id }, process.env.SECRET_KEY);
+                    await _user.findByIdAndUpdate(res.user_id, { last_seen: Date.now() + plus }, { useFindAndModify: true });
                     res.json({ init_messages, chat_token, "to": to_user._id })
                 }
             }

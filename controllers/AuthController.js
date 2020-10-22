@@ -46,11 +46,11 @@ module.exports = {
     GetUser: async (req, res, next) => {
         const cookie_enc = req.cookies.jwt_token;
         if (!cookie_enc) {
-            res.render('home');
+            res.redirect('/');
         } else {
             const { id } = await jwt.verify(cookie_enc, process.env.SECRET_KEY);
             if (!id) {
-                res.render('home');
+                res.redirect('/');
             } else {
                 const user = await _user.findById(id, ["id", "email"]);
                 res.user = user;
