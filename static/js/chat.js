@@ -1,4 +1,7 @@
 $(document).ready(() => {
+    const notification_sound = new Audio('/public/sounds/chat_notification.mp3');
+    const sent_sound = new Audio('/public/sounds/sent_message.mp3');
+
     const socket = io()
     const my_user_id = $('#my_user_id').attr('data-id');
     let chat_token_jwt;
@@ -20,6 +23,7 @@ $(document).ready(() => {
             li.innerHTML = liHTML;
             const messages_ul = $('.chat-messages .conversation-messages ul')[0]
             messages_ul.append(li);
+            notification_sound.play()
             messages_ul.scrollTop = messages_ul.scrollHeight
         }
     });
@@ -34,6 +38,7 @@ $(document).ready(() => {
         li.innerHTML = liHTML;
         const messages_ul = $('.chat-messages .conversation-messages ul')[0]
         messages_ul.append(li);
+        sent_sound.play()
         messages_ul.scrollTop = messages_ul.scrollHeight
     });
     $('#message_form').submit((e) => {
