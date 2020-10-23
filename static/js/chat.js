@@ -10,10 +10,11 @@ $(document).ready(() => {
         if ($('.chat-messages').attr("data_chatmate_id") == body.id) {
             const li = document.createElement('li');
             li.classList.add('op-message');
+            const now = new Date();
             const liHTML =
                 `<li class="op-message">
                         <div>
-                            <p>${body.message}</p>
+                            <p>${body.message}<br>${now.toLocaleString()}</p>
                         </div>
                     </li>`;
             li.innerHTML = liHTML;
@@ -25,9 +26,10 @@ $(document).ready(() => {
     socket.on("sent_message", (message) => {
         const li = document.createElement('li');
         li.classList.add('my-message');
+        const now = new Date();
         const liHTML =
             `<div>
-                 <p>${message}</p>
+                 <p>${message}<br>${now.toLocaleString()}</p>
             </div>`;
         li.innerHTML = liHTML;
         const messages_ul = $('.chat-messages .conversation-messages ul')[0]
@@ -61,19 +63,20 @@ $(document).ready(() => {
                 let conv_html = '';
                 for (const message of init_messages) {
                     let message_li = '';
+                    const mesDate = new Date(message.createdAt);
                     if (message.from == my_user_id) {
                         message_li =
-                            `<li class="my-message">
-            <div>
-                <p>${message.text}</p>
-            </div>
-                                </li> `
+                            `<li class="my-message" data-message-id="${message._id}">
+                                 <div>
+                                    <p>${message.text}<br>${mesDate.toLocaleString()}</p>
+                                </div>
+                            </li> `
                     } else {
                         message_li =
-                            `<li class="op-message" >
-                             <div>
-                                <p>${message.text}</p>
-                             </div>
+                            `<li class="op-message" data-message-id="${message._id}">
+                                <div>
+                                    <p>${message.text}<br>${mesDate.toLocaleString()}</p>
+                                </div>
                              </li> `
                     }
                     const li =
@@ -85,4 +88,22 @@ $(document).ready(() => {
             }
         }
     })
+    $(document).on("click", "div.conversation-messages ul li.my-message", (e) => {
+        const id = e.target.closest('li.my-message').getAttribute('data-message-id');
+        console.log(id);
+        const modal =
+            `<div id="myModal" class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm modal-dialog-centered">
+                <div class="modal-content">
+                    <button id="delete_message" class="btn btn-danger">Delete message?</button>
+                </div>
+            </div>
+        </div>`;
+        $("body").append(modal);
+
+        // $("#delete_message").click(() => {
+        // })
+
+        $('#myModal').modal()
+    });
 })

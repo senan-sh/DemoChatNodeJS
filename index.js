@@ -11,7 +11,7 @@ const io = require('socket.io')(server);
 mongoose.connect(process.env.DB_CONNECTION_URL,
     // mongodb+srv://senan_exe_pseudocoder:rkKWWbM8GQRSHEci@cluster0.ecztp.mongodb.net/DARK?retryWrites=true&w=majority
     // mongodb://localhost:27017/dark_social
-    { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true });
+    { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: true });
 
 app.set('view engine', 'ejs');
 app.use('/public', express.static(path.join(__dirname, 'static')));

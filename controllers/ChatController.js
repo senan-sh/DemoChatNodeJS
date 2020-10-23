@@ -2,17 +2,17 @@ const _conversation = require('../models/conversation');
 const _user = require('../models/user');
 const _message = require('../models/message');
 const jwt = require('jsonwebtoken');
-const plus = 1000 * 60 * 60 * 2;
+const GMT_4 = 1000 * 60 * 60 * 4;
 
 module.exports = function (io) {
     io.on('connection', (socket) => {
         let user_id;
         socket.on('add_sId_to_db', async (id) => {
             user_id = id;
-            await _user.findByIdAndUpdate(id, { last_seen: Date.now() + plus, $push: { "active_sockets": socket.id } }, { useFindAndModify: true });
+            await _user.findByIdAndUpdate(id, { last_seen: Date.now() + GMT_4, $push: { "active_sockets": socket.id } }, { useFindAndModify: true });
         });//FALSE
         socket.on('update_last_seen', (async (id) => {
-            await _user.findByIdAndUpdate(id, { last_seen: Date.now() + plus }, { useFindAndModify: true });
+            await _user.findByIdAndUpdate(id, { last_seen: Date.now() + GMT_4 }, { useFindAndModify: true });
         }));
         socket.on('disconnect', async (io) => {
             await _user.findByIdAndUpdate(user_id, { $pull: { "active_sockets": socket.id } }, { useFindAndModify: false });
@@ -51,7 +51,7 @@ module.exports = function (io) {
                 } else {
                     const init_messages = await _message.find({ "conversation": conversation._id }).sort({ "createdAt": -1 }).limit(10);
                     const chat_token = jwt.sign({ "my_id": res.user._id, "to": to_user._id, "conv_id": conversation._id }, process.env.SECRET_KEY);
-                    await _user.findByIdAndUpdate(res.user_id, { last_seen: Date.now() + plus }, { useFindAndModify: true });
+                    await _user.findByIdAndUpdate(res.user_id, { last_seen: Date.now() + GMT_4 }, { useFindAndModify: true });
                     res.json({ init_messages, chat_token, "to": to_user._id })
                 }
             }
