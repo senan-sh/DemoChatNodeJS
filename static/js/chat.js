@@ -27,13 +27,14 @@ $(document).ready(() => {
             messages_ul.scrollTop = messages_ul.scrollHeight
         }
     });
-    socket.on("sent_message", (message) => {
+    socket.on("sent_message", (body) => {
         const li = document.createElement('li');
         li.classList.add('my-message');
+        li.setAttribute("data-message-id",body.id)
         const now = new Date();
         const liHTML =
             `<div>
-                 <p>${message}<br>${now.toLocaleString()}</p>
+                 <p>${body.message}<br>${now.toLocaleString()}</p>
             </div>`;
         li.innerHTML = liHTML;
         const messages_ul = $('.chat-messages .conversation-messages ul')[0]
@@ -113,9 +114,12 @@ $(document).ready(() => {
         $('#myModal').modal()
         $("#myModal #delete_message").click(()=>{
             DeleteMessage(id);
+            $("#myModal").remove();
+            $(".modal-backdrop").remove();
         })
         $('#myModal').on('hidden.bs.modal', function () {
             $("#myModal").remove();
+            $(".modal-backdrop").remove();
         });
     });
 })

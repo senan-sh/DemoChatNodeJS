@@ -23,7 +23,7 @@ module.exports = function (io) {
             } else {
                 try {
                     const decoded = await jwt.verify(body.chat_token_jwt, process.env.SECRET_KEY);
-                    await _message.create({
+                    const { _id } = await _message.create({
                         text: body.message,
                         conversation: decoded.conv_id,
                         from: decoded.my_id
@@ -32,14 +32,13 @@ module.exports = function (io) {
                     for (const socket of active_sockets) {
                         io.to(socket).emit("get_message", { "message": body.message, "id": decoded.my_id });
                     };
-                    socket.emit('sent_message', body.message)
+                    socket.emit('sent_message', { message: body.message, id: _id })
                 } catch {
                     return false;
                 }
             }
         });
         socket.on("delete_message", async (body) => {
-            console.log("came");
             if (!body.id || !body.chat_token_jwt) {
                 return false;
             } else {
