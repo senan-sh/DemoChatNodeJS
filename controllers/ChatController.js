@@ -18,17 +18,44 @@ module.exports = function (io) {
             await _user.findByIdAndUpdate(user_id, { $pull: { "active_sockets": socket.id } }, { useFindAndModify: false });
         });
         socket.on("send_message", async (body) => {
-            const decoded = await jwt.verify(body.chat_token_jwt, process.env.SECRET_KEY);
-            await _message.create({
-                text: body.message,
-                conversation: decoded.conv_id,
-                from: decoded.my_id
-            });
-            const { active_sockets } = await _user.findById(decoded.to, ['active_sockets']);
-            for (const socket of active_sockets) {
-                io.to(socket).emit("get_message", { "message": body.message, "id": decoded.my_id });
-            };
-            socket.emit('sent_message', body.message)
+            if (!body.message || !body.chat_token_jwt) {
+                return false;
+            } else {
+                try {
+                    const decoded = await jwt.verify(body.chat_token_jwt, process.env.SECRET_KEY);
+                    await _message.create({
+                        text: body.message,
+                        conversation: decoded.conv_id,
+                        from: decoded.my_id
+                    });
+                    const { active_sockets } = await _user.findById(decoded.to, ['active_sockets']);
+                    for (const socket of active_sockets) {
+                        io.to(socket).emit("get_message", { "message": body.message, "id": decoded.my_id });
+                    };
+                    socket.emit('sent_message', body.message)
+                } catch {
+                    return false;
+                }
+            }
+        });
+        socket.on("delete_message", async (body) => {
+            console.log("came");
+            if (!body.id || !body.chat_token_jwt) {
+                return false;
+            } else {
+                try {
+                    const id = body.id
+                    const decoded = await jwt.verify(body.chat_token_jwt, process.env.SECRET_KEY);
+                    await _message.findByIdAndDelete(body.id);
+                    const { active_sockets } = await _user.findById(decoded.to, ['active_sockets']);
+                    for (const socket of active_sockets) {
+                        io.to(socket).emit("deleted_message", id);
+                    };
+                    socket.emit('deleted_message', id)
+                } catch {
+                    return false;
+                }
+            }
         })
     })
     const ChatController = {
@@ -36,7 +63,7 @@ module.exports = function (io) {
             res.locals.user = await res.user;
             res.render('chat');
         },
-        BringConversation: async (req, res, next) => {
+        BringConversation: async (req, res) => {
             const to_user = await _user.findOne({ "email": req.query.email });
             if (!to_user) {
                 res.status(404).end();
@@ -55,7 +82,7 @@ module.exports = function (io) {
                     res.json({ init_messages, chat_token, "to": to_user._id })
                 }
             }
-        }
+        },
     }
     return ChatController;
 }

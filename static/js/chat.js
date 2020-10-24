@@ -41,6 +41,9 @@ $(document).ready(() => {
         sent_sound.play()
         messages_ul.scrollTop = messages_ul.scrollHeight
     });
+    socket.on("deleted_message",(id)=>{
+        $(`.conversation-messages ul li[data-message-id="${id}"]`).remove();
+    })
     $('#message_form').submit((e) => {
         e.preventDefault();
         const message = $('#message_text').val();
@@ -95,7 +98,6 @@ $(document).ready(() => {
     })
     $(document).on("click", "div.conversation-messages ul li.my-message", (e) => {
         const id = e.target.closest('li.my-message').getAttribute('data-message-id');
-        console.log(id);
         const modal =
             `<div id="myModal" class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-sm modal-dialog-centered">
@@ -105,10 +107,15 @@ $(document).ready(() => {
             </div>
         </div>`;
         $("body").append(modal);
-
-        // $("#delete_message").click(() => {
-        // })
-
+        function DeleteMessage(id) {
+            socket.emit("delete_message", { chat_token_jwt, id })
+        };
         $('#myModal').modal()
+        $("#myModal #delete_message").click(()=>{
+            DeleteMessage(id);
+        })
+        $('#myModal').on('hidden.bs.modal', function () {
+            $("#myModal").remove();
+        });
     });
 })
